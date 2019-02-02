@@ -6,10 +6,7 @@ const writeFile = promisify(require('fs').writeFile);
 const copyFile = promisify(require('fs').copyFile);
 const homedir = require('os').homedir();
 
-const rl = require('readline').createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
+/* HELPERS */
 
 const getPathToSettings = () => {
 	const common = ['Code', 'User', 'settings.json'];
@@ -34,131 +31,148 @@ const readInstalledExtensions = () =>
 
 const transformExtensionsStringToArray = extensionsString => extensionsString.split('\n').filter(Boolean); // exclude empty strings
 
-const ask = question => new Promise(resolve => rl.question(question, answer => resolve(answer)));
-
 const installExtension = extension => {
-	console.log(`Installing ${extension}`);
+	console.log(`📦 Installing ${extension}`);
 	return exec(`code --install-extension ${extension}`);
 };
 
 const uninstallExtension = extension => {
-	console.log(`Uninstalling ${extension}`);
+	console.log(`♻ Uninstalling ${extension}`);
 	return exec(`code --uninstall-extension ${extension}`);
 };
 
-const [, , command] = process.argv;
+/* COMMANDS */
 
-const commands = {
-	'save-settings': () => {
-		rl.close();
+const saveSettings = () => {
+	console.log('💾 Saving settings...');
 
-		console.log('Saving settings...');
+	return copyFile(getPathToSettings(), './settings.json')
+		.then(() => console.log('✅ Success!'))
+		.catch(console.error);
+};
 
-		copyFile(getPathToSettings(), './settings.json')
-			.then(() => console.log('Success!'))
-			.catch(console.error);
-	},
+const applySettings = () => {
+	console.log('🚐 Applying settings...');
 
-	'apply-settings': () => {
-		rl.close();
+	return copyFile('./settings.json', getPathToSettings())
+		.then(() => console.log('✅ Success!'))
+		.catch(console.error);
+};
 
-		console.log('Applying settings...');
+const saveExtensions = () => {
+	console.log('💾 Saving extensions list...');
 
-		copyFile('./settings.json', getPathToSettings())
-			.then(() => console.log('Success!'))
-			.catch(console.error);
-	},
+	return readInstalledExtensions()
+		.then(list => writeFile('extensions', list))
+		.then(() => console.log('✅ Success!'))
+		.catch(console.error);
+};
 
-	'save-extensions': () => {
-		console.log('Saving extensions list...');
+const installExtensions = () => {
+	console.log('🚚 Installing extensions...');
+	console.log('---');
 
-		readInstalledExtensions()
-			.then(list => writeFile('extensions', list))
-			.then(() => console.log('Success!'))
-			.catch(console.error);
-	},
+	let extensionsToInstall = [];
+	let extensionsToUninstall = [];
 
-	'install-extensions': () => {
-		console.log('Installing extensions...');
-		console.log('---');
+	const rl = require('readline').createInterface({
+		input: process.stdin,
+		output: process.stdout,
+	});
 
-		let extensionsToInstall = [];
-		let extensionsToUninstall = [];
+	readInstalledExtensions()
+		.then(installedExtensionsStr => {
+			const installedExtensions = transformExtensionsStringToArray(installedExtensionsStr);
+			const savedExtensions = transformExtensionsStringToArray(readFileSync('./extensions', {encoding: 'utf8'}));
 
-		readInstalledExtensions()
-			.then(installedExtensionsStr => {
-				const installedExtensions = transformExtensionsStringToArray(installedExtensionsStr);
-				const savedExtensions = transformExtensionsStringToArray(
-					readFileSync('./extensions', {encoding: 'utf8'}),
-				);
+			if (!savedExtensions.length) {
+				console.log('`extensions` file is empty');
+				process.exit(1);
+			}
 
-				if (!savedExtensions.length) {
-					console.log('`extensions` file is empty');
-					process.exit(1);
-				}
+			extensionsToInstall = savedExtensions.reduce((acc, extensionName) => {
+				if (installedExtensions.includes(extensionName)) return acc;
 
-				extensionsToInstall = savedExtensions.reduce((acc, extensionName) => {
-					if (installedExtensions.includes(extensionName)) return acc;
+				acc.push(extensionName);
+				return acc;
+			}, []);
 
-					acc.push(extensionName);
-					return acc;
-				}, []);
+			extensionsToUninstall = installedExtensions.reduce((acc, extensionName) => {
+				if (savedExtensions.includes(extensionName)) return acc;
 
-				extensionsToUninstall = installedExtensions.reduce((acc, extensionName) => {
-					if (savedExtensions.includes(extensionName)) return acc;
+				acc.push(extensionName);
+				return acc;
+			}, []);
 
-					acc.push(extensionName);
-					return acc;
-				}, []);
+			if (!extensionsToUninstall.length && !extensionsToInstall.length) {
+				console.log('🎉 Nothing to install and uninstall');
+				process.exit(0);
+			}
 
-				if (!extensionsToUninstall.length && !extensionsToInstall.length) {
-					console.log('Nothing to install and uninstall');
-					process.exit(0);
-				}
-
-				return ask(
+			return new Promise(resolve =>
+				rl.question(
 					[
 						extensionsToInstall.length
-							? `Extensions to install (${extensionsToInstall.length}):\n ${extensionsToInstall.join(
+							? `📦 Extensions to install (${extensionsToInstall.length}):\n${extensionsToInstall.join(
 									'\n',
-							  )} \n`
-							: 'Nothing to install \n',
+							  )}\n`
+							: '📦 Nothing to install\n',
 
 						'---\n',
 
 						extensionsToUninstall.length
-							? `Extensions to uninstall (${
+							? `♻ Extensions to uninstall (${
 									extensionsToUninstall.length
-							  }):\n ${extensionsToUninstall.join('\n')} \n`
-							: 'Nothing to uninstall \n',
+							  }):\n ${extensionsToUninstall.join('\n')}\n`
+							: '♻ Nothing to uninstall\n',
 
 						'---\n',
 
-						'Are you sure you want to continue? (y/N): ',
+						'🙏 Are you sure you want to continue? (y/N): ',
 					].join(''),
-				);
-			})
 
-			.then(answer => {
-				rl.close();
+					answer => resolve(answer),
+				),
+			);
+		})
 
-				if (answer !== 'y') {
-					process.exit(0);
-				}
+		.then(answer => {
+			rl.close();
 
-				return Promise.all(extensionsToInstall.map(installExtension));
-			})
+			if (answer !== 'y') {
+				process.exit(0);
+			}
 
-			.then(() => Promise.all(extensionsToUninstall.map(uninstallExtension)))
-			.then(() => console.log('Success!'))
-			.catch(console.error);
-	},
+			return Promise.all(extensionsToInstall.map(installExtension));
+		})
+
+		.then(() => Promise.all(extensionsToUninstall.map(uninstallExtension)))
+		.then(() => console.log('✅ Success! Restart vs-code to apply them.'))
+		.catch(console.error);
+};
+
+const applyAll = () => {
+	applySettings().then(installExtensions);
+};
+
+const saveAll = () => {
+	saveSettings().then(saveExtensions);
+}
+
+const commands = {
+	'apply-all': applyAll,
+	'save-all': saveAll,
+	'save-settings': saveSettings,
+	'apply-settings': applySettings,
+	'save-extensions': saveExtensions,
+	'install-extensions': installExtensions,
 
 	__unknown__: () => {
-		console.log('Unknown command!');
+		console.log('🧐 Unknown command!');
 		process.exit(0);
 	},
 };
 
+const [, , command] = process.argv;
 const run = command in commands ? commands[command] : commands.__unknown__;
 run();
