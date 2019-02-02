@@ -123,7 +123,7 @@ const installExtensions = () => {
 						extensionsToUninstall.length
 							? `♻ Extensions to uninstall (${
 									extensionsToUninstall.length
-							  }):\n ${extensionsToUninstall.join('\n')}\n`
+							  }):\n${extensionsToUninstall.join('\n')}\n`
 							: '♻ Nothing to uninstall\n',
 
 						'---\n',
