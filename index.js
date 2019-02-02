@@ -8,6 +8,14 @@ const homedir = require('os').homedir();
 
 /* HELPERS */
 
+const diff = (base, values) =>
+	values.reduce((acc, value) => {
+		if (base.includes(value)) return acc;
+
+		acc.push(value);
+		return acc;
+	}, []);
+
 const getPathToSettings = () => {
 	const common = ['Code', 'User', 'settings.json'];
 
@@ -90,19 +98,8 @@ const installExtensions = () => {
 				process.exit(1);
 			}
 
-			extensionsToInstall = savedExtensions.reduce((acc, extensionName) => {
-				if (installedExtensions.includes(extensionName)) return acc;
-
-				acc.push(extensionName);
-				return acc;
-			}, []);
-
-			extensionsToUninstall = installedExtensions.reduce((acc, extensionName) => {
-				if (savedExtensions.includes(extensionName)) return acc;
-
-				acc.push(extensionName);
-				return acc;
-			}, []);
+			extensionsToInstall = diff(installedExtensions, savedExtensions);
+			extensionsToUninstall = diff(savedExtensions, installedExtensions);
 
 			if (!extensionsToUninstall.length && !extensionsToInstall.length) {
 				console.log('🎉 Nothing to install and uninstall');
@@ -147,7 +144,7 @@ const installExtensions = () => {
 		})
 
 		.then(() => Promise.all(extensionsToUninstall.map(uninstallExtension)))
-		.then(() => console.log('✅ Success! Restart vs-code to apply them.'))
+		.then(() => console.log('✅ Success! Restart vs-code to apply extensions.'))
 		.catch(console.error);
 };
 
@@ -157,7 +154,7 @@ const applyAll = () => {
 
 const saveAll = () => {
 	saveSettings().then(saveExtensions);
-}
+};
 
 const commands = {
 	'apply-all': applyAll,
