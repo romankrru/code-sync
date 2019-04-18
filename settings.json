@@ -8,11 +8,11 @@
 	"editor.insertSpaces": false,
 	"editor.tabSize": 4,
 	"editor.detectIndentation": true,
-	"editor.fontFamily": "Fira Code",
-	"editor.fontWeight": "500",
+	"editor.fontFamily": "Hasklig",
+	"editor.fontWeight": "400",
 	"window.titleBarStyle": "custom",
 	"terminal.integrated.rendererType": "dom",
-	"window.zoomLevel": -1,
+	"window.zoomLevel": 0,
 	"editor.fontLigatures": true,
 
 	"workbench.activityBar.visible": true,
@@ -28,17 +28,31 @@
 	"prettier.bracketSpacing": false,
 	"prettier.useTabs": true,
 
+	"vim.insertModeKeyBindings": [
+		{
+			"before": ["j", "j"],
+			"after": ["<Esc>"]
+		}
+	],
+	"vim.easymotion": true,
+	"vim.leader": "<space>",
+	"vim.useSystemClipboard": true,
+	"vim.ignorecase": true,
+
 	"cSpell.userWords": [
+		"btns",
 		"capfirst",
 		"checkboxes",
 		"checkmark",
 		"coffe",
+		"collapsable",
 		"component",
 		"cond",
 		"csrf",
 		"datepicker",
 		"datetime",
 		"debounced",
+		"devtool",
 		"dropdown",
 		"emailhub",
 		"escaperegexp",
@@ -53,6 +67,8 @@
 		"matlab",
 		"maxlength",
 		"modificator",
+		"multipart",
+		"nocheck",
 		"noopener",
 		"noreferrer",
 		"paginator",
@@ -94,5 +110,9 @@
 		"will",
 		"xstream",
 		"zeit"
-	]
+	],
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"workbench.colorTheme": "Ayu Mirage Bordered",
 }
