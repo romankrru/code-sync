@@ -2,13 +2,13 @@
 	{
 		"key": "f",
 		"command": "explorer.newFile",
-		"when": "!editorFocus && explorerViewletFocus"
+		"when": "!editorFocus && explorerViewletFocus && !inputFocus"
 	},
 
 	{
 		"key": "d",
 		"command": "explorer.newFolder",
-		"when": "!editorFocus && explorerViewletFocus"
+		"when": "!editorFocus && explorerViewletFocus && !inputFocus"
 	},
 
 	{
@@ -38,6 +38,12 @@
 	{
 		"key": "e",
 		"command": "workbench.action.focusActiveEditorGroup",
-		"when": "explorerViewletFocus"
+		"when": "explorerViewletFocus && !inputFocus"
+	},
+
+	{
+		"key": "x",
+		"command": "deleteFile",
+		"when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
 	}
 ]
