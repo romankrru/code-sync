@@ -16,8 +16,8 @@ const diff = (base, values) =>
 		return acc;
 	}, []);
 
-const getPathToSettings = () => {
-	const common = ['Code', 'User', 'settings.json'];
+const getPathToConfig = () => {
+	const common = ['Code', 'User'];
 
 	if (process.platform === 'win32') return path.join(homedir, 'AppData', 'Roaming', ...common);
 
@@ -26,6 +26,7 @@ const getPathToSettings = () => {
 
 const readInstalledExtensions = () =>
 	exec('code --list-extensions')
+
 		.then(({stdout, stderr}) => {
 			if (stderr) {
 				console.log(`Unable to get extensions. stderr: ${stderr}`);
@@ -54,7 +55,15 @@ const uninstallExtension = extension => {
 const saveSettings = () => {
 	console.log('💾 Saving settings...');
 
-	return copyFile(getPathToSettings(), './settings.json')
+	return copyFile(path.join(getPathToConfig(), 'settings.json'), './settings.json')
+		.then(() => console.log('✅ Success!'))
+		.catch(console.error);
+};
+
+const saveKeyBindings = () => {
+	console.log('💾 Saving key bindings...');
+
+	return copyFile(path.join(getPathToConfig(), 'keybindings.json'), './keybindings.json')
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -62,7 +71,15 @@ const saveSettings = () => {
 const applySettings = () => {
 	console.log('🚐 Applying settings...');
 
-	return copyFile('./settings.json', getPathToSettings())
+	return copyFile('./settings.json', path.join(getPathToConfig(), 'settings.json'))
+		.then(() => console.log('✅ Success!'))
+		.catch(console.error);
+};
+
+const applyKeyBindings = () => {
+	console.log('🚐 Applying key bindings...');
+
+	return copyFile('./keybindings.json', path.join(getPathToConfig(), 'keybindings.json'))
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -149,11 +166,15 @@ const installExtensions = () => {
 };
 
 const applyAll = () => {
-	applySettings().then(installExtensions);
+	applySettings()
+		.then(applyKeyBindings)
+		.then(installExtensions);
 };
 
 const saveAll = () => {
-	saveSettings().then(saveExtensions);
+	saveSettings()
+		.then(saveKeyBindings)
+		.then(saveExtensions);
 };
 
 const commands = {
