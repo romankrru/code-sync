@@ -34,10 +34,19 @@
 			"after": ["<Esc>"]
 		}
 	],
+
+	"vim.normalModeKeyBindingsNonRecursive": [
+		{
+			"before": ["<leader>", "t"],
+			"commands": ["workbench.files.action.focusFilesExplorer"]
+		}
+	],
+
 	"vim.easymotion": true,
 	"vim.leader": "<space>",
 	"vim.useSystemClipboard": true,
 	"vim.ignorecase": true,
+	"vim.useCtrlKeys": false,
 
 	"cSpell.userWords": [
 		"btns",
