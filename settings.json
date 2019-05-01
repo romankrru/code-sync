@@ -1,4 +1,6 @@
 {
+	"workbench.colorTheme": "Ayu Mirage Bordered",
+	"workbench.iconTheme": "vscode-great-icons",
 	"javascript.validate.enable": false,
 	"editor.renderIndentGuides": true,
 	"files.trimTrailingWhitespace": true,
@@ -47,6 +49,15 @@
 	"vim.useSystemClipboard": true,
 	"vim.ignorecase": true,
 	"vim.useCtrlKeys": false,
+
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"[reason]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2
+	},
 
 	"cSpell.userWords": [
 		"btns",
@@ -120,8 +131,4 @@
 		"xstream",
 		"zeit"
 	],
-	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"workbench.colorTheme": "Ayu Mirage Bordered",
 }
