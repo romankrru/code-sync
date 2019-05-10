@@ -16,7 +16,7 @@
 	"terminal.integrated.rendererType": "dom",
 	"window.zoomLevel": 0,
 	"editor.fontLigatures": true,
-
+	"editor.rulers": [80,120],
 	"workbench.activityBar.visible": true,
 	"editor.occurrencesHighlight": false,
 	"search.runInExtensionHost": true,
@@ -56,7 +56,12 @@
 
 	"[reason]": {
 		"editor.insertSpaces": true,
-		"editor.tabSize": 2
+		"editor.tabSize": 2,
+		"editor.formatOnSave": true
+	},
+
+	"emmet.includeLanguages": {
+		"reason": "javascriptreact",
 	},
 
 	"cSpell.userWords": [

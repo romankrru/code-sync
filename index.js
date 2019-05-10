@@ -19,14 +19,14 @@ const diff = (base, values) =>
 const getPathToConfig = () => {
 	const common = ['Code', 'User'];
 
-	if (process.platform === 'win32') return path.join(homedir, 'AppData', 'Roaming', ...common);
+	if (process.platform === 'win32')
+		return path.join(homedir, 'AppData', 'Roaming', ...common);
 
 	return path.join(homedir, '.config', ...common);
 };
 
 const readInstalledExtensions = () =>
 	exec('code --list-extensions')
-
 		.then(({stdout, stderr}) => {
 			if (stderr) {
 				console.log(`Unable to get extensions. stderr: ${stderr}`);
@@ -38,7 +38,8 @@ const readInstalledExtensions = () =>
 
 		.catch(console.error);
 
-const transformExtensionsStringToArray = extensionsString => extensionsString.split('\n').filter(Boolean); // exclude empty strings
+const transformExtensionsStringToArray = extensionsString =>
+	extensionsString.split('\n').filter(Boolean); // exclude empty strings
 
 const installExtension = extension => {
 	console.log(`📦 Installing ${extension}`);
@@ -55,7 +56,10 @@ const uninstallExtension = extension => {
 const saveSettings = () => {
 	console.log('💾 Saving settings...');
 
-	return copyFile(path.join(getPathToConfig(), 'settings.json'), './settings.json')
+	return copyFile(
+		path.join(getPathToConfig(), 'settings.json'),
+		'./settings.json',
+	)
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -63,7 +67,10 @@ const saveSettings = () => {
 const saveKeyBindings = () => {
 	console.log('💾 Saving key bindings...');
 
-	return copyFile(path.join(getPathToConfig(), 'keybindings.json'), './keybindings.json')
+	return copyFile(
+		path.join(getPathToConfig(), 'keybindings.json'),
+		'./keybindings.json',
+	)
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -71,7 +78,10 @@ const saveKeyBindings = () => {
 const applySettings = () => {
 	console.log('🚐 Applying settings...');
 
-	return copyFile('./settings.json', path.join(getPathToConfig(), 'settings.json'))
+	return copyFile(
+		'./settings.json',
+		path.join(getPathToConfig(), 'settings.json'),
+	)
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -79,7 +89,10 @@ const applySettings = () => {
 const applyKeyBindings = () => {
 	console.log('🚐 Applying key bindings...');
 
-	return copyFile('./keybindings.json', path.join(getPathToConfig(), 'keybindings.json'))
+	return copyFile(
+		'./keybindings.json',
+		path.join(getPathToConfig(), 'keybindings.json'),
+	)
 		.then(() => console.log('✅ Success!'))
 		.catch(console.error);
 };
@@ -107,8 +120,13 @@ const installExtensions = () => {
 
 	readInstalledExtensions()
 		.then(installedExtensionsStr => {
-			const installedExtensions = transformExtensionsStringToArray(installedExtensionsStr);
-			const savedExtensions = transformExtensionsStringToArray(readFileSync('./extensions', {encoding: 'utf8'}));
+			const installedExtensions = transformExtensionsStringToArray(
+				installedExtensionsStr,
+			);
+
+			const savedExtensions = transformExtensionsStringToArray(
+				readFileSync('./extensions', {encoding: 'utf8'}),
+			);
 
 			if (!savedExtensions.length) {
 				console.log('`extensions` file is empty');
@@ -127,9 +145,9 @@ const installExtensions = () => {
 				rl.question(
 					[
 						extensionsToInstall.length
-							? `📦 Extensions to install (${extensionsToInstall.length}):\n${extensionsToInstall.join(
-									'\n',
-							  )}\n`
+							? `📦 Extensions to install (${
+									extensionsToInstall.length
+							  }):\n${extensionsToInstall.join('\n')}\n`
 							: '📦 Nothing to install\n',
 
 						'---\n',
@@ -161,7 +179,9 @@ const installExtensions = () => {
 		})
 
 		.then(() => Promise.all(extensionsToUninstall.map(uninstallExtension)))
-		.then(() => console.log('✅ Success! Restart vs-code to apply extensions.'))
+		.then(() =>
+			console.log('✅ Success! Restart vs-code to apply extensions.'),
+		)
 		.catch(console.error);
 };
 
