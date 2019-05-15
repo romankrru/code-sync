@@ -12,12 +12,13 @@
 	"editor.detectIndentation": true,
 	"editor.fontFamily": "Hasklig",
 	"editor.fontWeight": "400",
-	"window.titleBarStyle": "custom",
 	"terminal.integrated.rendererType": "dom",
 	"window.zoomLevel": 0,
 	"editor.fontLigatures": true,
-	"editor.rulers": [80,120],
-	"workbench.activityBar.visible": true,
+	"editor.rulers": [
+		80,
+		120
+	],
 	"editor.occurrencesHighlight": false,
 	"search.runInExtensionHost": true,
 	"telemetry.enableCrashReporter": false,
@@ -136,4 +137,5 @@
 		"xstream",
 		"zeit"
 	],
+	"workbench.editor.highlightModifiedTabs": true,
 }
