@@ -15,10 +15,8 @@
 	"terminal.integrated.rendererType": "dom",
 	"window.zoomLevel": 0,
 	"editor.fontLigatures": true,
-	"editor.rulers": [
-		80,
-		120
-	],
+	"editor.rulers": [80, 120],
+	"editor.lineNumbers": "relative",
 	"editor.occurrencesHighlight": false,
 	"search.runInExtensionHost": true,
 	"telemetry.enableCrashReporter": false,
@@ -42,10 +40,23 @@
 		{
 			"before": ["<leader>", "t"],
 			"commands": ["workbench.files.action.focusFilesExplorer"]
+		},
+		{
+			"before": ["<leader>", "s"],
+			"after": ["<leader>", "<leader>", "s"]
 		}
 	],
 
+	"vim.handleKeys": {
+		"<C-d>": true,
+		"<C-u>": true
+	},
+
 	"vim.easymotion": true,
+	"vim.easymotionMarkerFontFamily": "Hasklig",
+	"vim.easymotionMarkerFontSize": 14,
+	"vim.easymotionMarkerYOffset": 0,
+	"vim.easymotionMarkerHeight": 19,
 	"vim.leader": "<space>",
 	"vim.useSystemClipboard": true,
 	"vim.ignorecase": true,
@@ -62,7 +73,7 @@
 	},
 
 	"emmet.includeLanguages": {
-		"reason": "javascriptreact",
+		"reason": "javascriptreact"
 	},
 
 	"cSpell.userWords": [
@@ -137,5 +148,5 @@
 		"xstream",
 		"zeit"
 	],
-	"workbench.editor.highlightModifiedTabs": true,
+	"workbench.editor.highlightModifiedTabs": true
 }
